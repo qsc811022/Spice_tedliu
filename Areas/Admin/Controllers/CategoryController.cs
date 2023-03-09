@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+using Spice_tedliu.Data;
 
 using System;
 using System.Collections.Generic;
@@ -7,11 +10,19 @@ using System.Threading.Tasks;
 
 namespace Spice_tedliu.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
-        public IActionResult Index()
+        private readonly ApplicationDbContext _db;
+
+        public CategoryController(ApplicationDbContext db)
         {
-            return View();
+            _db=db;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            return View(await _db.Categroy.ToListAsync());
         }
     }
 }
