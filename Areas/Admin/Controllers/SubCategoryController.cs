@@ -27,6 +27,7 @@ namespace Spice_tedliu.Areas.Admin.Controllers
             return View(subCategories);
         }
 
+        //get-create
         public async Task<IActionResult> Create()
         {
             SubCategoryAndCategoryViewModel model = new SubCategoryAndCategoryViewModel()
@@ -37,6 +38,41 @@ namespace Spice_tedliu.Areas.Admin.Controllers
             };
            return View(model);
         }
+
+        //post-create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(SubCategoryAndCategoryViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var doesSubCategoryExists = _db.SubCategroy.Include(s=>s.Category).Where(s=>s.Name==model.SubCategory.Name && s.Category.Id==model.SubCategory.CategoryId);
+
+
+                if(doesSubCategoryExists.Count()>0)
+                {
+
+
+                }
+                else
+                {
+                    _db.SubCategroy.Add(model.SubCategory);
+                    await _db.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+
+
+                }
+            }
+            SubCategoryAndCategoryViewModel modelVM = new SubCategoryAndCategoryViewModel()
+            {
+                CategoryList = await _db.Categroy.ToListAsync(),
+                SubCategory = model.SubCategory,
+                SubCategoryList = await _db.SubCategroy.OrderBy(p => p.Name).Select(p => p.Name).ToListAsync()
+            };
+            return View(modelVM);
+
+        }
+
 
 
     }
