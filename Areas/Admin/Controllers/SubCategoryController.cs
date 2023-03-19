@@ -16,6 +16,9 @@ namespace Spice_tedliu.Areas.Admin.Controllers
     {
         private readonly ApplicationDbContext _db;
 
+        [TempData]
+        public string StatusMessge { get;set;}
+
         public SubCategoryController(ApplicationDbContext db)
         {
             _db=db;
@@ -51,7 +54,8 @@ namespace Spice_tedliu.Areas.Admin.Controllers
 
                 if(doesSubCategoryExists.Count()>0)
                 {
-
+                    //Error
+                    StatusMessge="Error: Sub Category exists under"+doesSubCategoryExists.First().Category.Name+"category. Please use anthoer name";
 
                 }
                 else
