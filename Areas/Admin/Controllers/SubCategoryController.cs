@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 using Spice_tedliu.Data;
+using Spice_tedliu.Models;
 using Spice_tedliu.Models.ViewModels;
 
 using System;
@@ -71,12 +73,24 @@ namespace Spice_tedliu.Areas.Admin.Controllers
             {
                 CategoryList = await _db.Categroy.ToListAsync(),
                 SubCategory = model.SubCategory,
-                SubCategoryList = await _db.SubCategroy.OrderBy(p => p.Name).Select(p => p.Name).ToListAsync()
+                SubCategoryList = await _db.SubCategroy.OrderBy(p => p.Name).Select(p => p.Name).ToListAsync(),
+                StatusMessage=StatusMessge
             };
             return View(modelVM);
 
         }
 
+        [ActionName("GetSubCategory")]
+        public async Task<IActionResult> GetSubCategory(int id)
+        {
+            List<SubCategory> subCategories = new List<SubCategory>();
+
+            subCategories = await (from SubCategory in _db.SubCategroy
+                             where SubCategory.CategoryId == id
+                             select SubCategory).ToListAsync();
+            return Json(new SelectList(subCategories,"Id","Name"));
+
+        }
 
 
     }
