@@ -10,7 +10,7 @@
 <br />
 <h2 class="text-info">Create Sub Category</h2>
 <br />
-<div class="border backgroundWhiteBorder">
+<div class="border backgroundWhiteBorder row">
     <div class="col-8 border-right">
         <form asp-action="Create">
 
@@ -20,7 +20,7 @@
                     <label asp-for="SubCategory.CategoryId" class="col-form-label"></label>
                 </div>
                 <div class="col-5">
-                  <select id="ddlCategorylist" asp-for="SubCategory.CategoryId" asp-items="Model.CategoryList.ToSelectListItem(Model.SubCategory.CategoryId)" class="form-control"></select>
+                    <select id="ddlCategorylist" asp-for="SubCategory.CategoryId" asp-items="Model.CategoryList.ToSelectListItem(Model.SubCategory.CategoryId)" class="form-control"></select>
                 </div>
             </div>
             <div class="form-group row">
@@ -42,16 +42,57 @@
         </form>
     </div>
     <div class="col-3 offset-1">
-        @if (Model.SubCategoryList.Count()>0) 
-        { 
+        @if (Model.SubCategoryList.Count() > 0)
+        {
             <p>Existing Subcategories</p>
             <div id="SubCategoryList">
                 <ul class="SubCategoryList">
-                 
                 </ul>
             </div>
         }
     </div>
-
+ 
 
 </div>
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+            
+     }
+
+    <script>
+        function updateSubCategoryList() {
+           /* #SubCategoryList*/
+            var categorySeclted = document.getElementById("ddlCategorylist").value;
+            $list = $('#SubCategoryList');
+            $.ajax({
+                url: '/Admin/SubCategory/GetSubCategory' + categorySeclted,
+                type: 'GET',
+                dataType: 'text',
+                success: function (data) {
+                    results = JSON.parse(data);
+                    $list.html('');
+                    $list.append('<ul class="list-group">')
+                    for (i in results) {
+                        $list.append('<li class="list-group-item">' + results[i].text + '</li>')
+                    }
+                    $list.append('</ul>');
+                }
+
+            });
+
+        }
+        $(document).ready(function () {
+            updateSubCategoryList();
+        })
+
+        $("#ddlCategorylist").on("change", function () {
+            updateSubCategoryList();
+
+        })
+
+    </script>
+
+}
+
