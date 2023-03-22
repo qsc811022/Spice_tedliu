@@ -61,38 +61,37 @@
             
      }
 
-    <script>
-        function updateSubCategoryList() {
-           /* #SubCategoryList*/
-            var categorySeclted = document.getElementById("ddlCategorylist").value;
-            $list = $('#SubCategoryList');
-            $.ajax({
-                url: '/Admin/SubCategory/GetSubCategory' + categorySeclted,
-                type: 'GET',
-                dataType: 'text',
-                success: function (data) {
-                    results = JSON.parse(data);
-                    $list.html('');
-                    $list.append('<ul class="list-group">')
-                    for (i in results) {
-                        $list.append('<li class="list-group-item">' + results[i].text + '</li>')
-                    }
-                    $list.append('</ul>');
+<script>
+    function updateSubCategoryList() {
+        /* #SubCategoryList*/
+        var categorySelected = document.getElementById("ddlCategorylist").value;
+        $list = $('#SubCategoryList');
+        $.ajax({
+            url: '/Admin/SubCategory/GetSubCategory?id=' + categorySelected,
+            type: 'GET',
+            dataType: 'text',
+            success: function (data) {
+                results = JSON.parse(data);
+                $list.html('');
+                $list.append('<ul class="list-group">');
+                for (i in results) {
+                    $list.append('<li class="list-group-item">' + results[i].text + '</li>');
                 }
+                $list.append('</ul>');
+            }
 
-            });
+        });
 
-        }
-        $(document).ready(function () {
-            updateSubCategoryList();
-        })
+    }
+    $(document).ready(function () {
+        updateSubCategoryList();
+    });
 
-        $("#ddlCategorylist").on("change", function () {
-            updateSubCategoryList();
+    $("#ddlCategorylist").on("change", function () {
+        updateSubCategoryList();
 
-        })
-
-    </script>
+    });
+</script>
 
 }
 
