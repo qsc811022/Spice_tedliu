@@ -135,7 +135,9 @@ namespace Spice_tedliu.Areas.Admin.Controllers
                 }
                 else
                 {
-                    _db.SubCategroy.Add(model.SubCategory);
+                    var subCateFromDb = await _db.SubCategroy.FindAsync(id);
+                    subCateFromDb.Name=model.SubCategory.Name;
+                    //_db.SubCategroy.Add(model.SubCategory);
                     await _db.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
 
