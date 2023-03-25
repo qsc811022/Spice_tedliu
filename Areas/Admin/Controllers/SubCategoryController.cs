@@ -175,6 +175,37 @@ namespace Spice_tedliu.Areas.Admin.Controllers
 
 
 
+        //GET -Delete
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var category = await _db.Categroy.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int? id)
+        {
+            var category = await _db.Categroy.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            _db.Categroy.Remove(category);
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
 
     }
 }
