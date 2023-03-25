@@ -120,7 +120,7 @@ namespace Spice_tedliu.Areas.Admin.Controllers
         //post-create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,SubCategoryAndCategoryViewModel model)
+        public async Task<IActionResult> Edit(SubCategoryAndCategoryViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -135,7 +135,7 @@ namespace Spice_tedliu.Areas.Admin.Controllers
                 }
                 else
                 {
-                    var subCateFromDb = await _db.SubCategroy.FindAsync(id);
+                    var subCateFromDb = await _db.SubCategroy.FindAsync(model.SubCategory.Id);
                     subCateFromDb.Name=model.SubCategory.Name;
                     //_db.SubCategroy.Add(model.SubCategory);
                     await _db.SaveChangesAsync();
@@ -151,8 +151,26 @@ namespace Spice_tedliu.Areas.Admin.Controllers
                 SubCategoryList = await _db.SubCategroy.OrderBy(p => p.Name).Select(p => p.Name).ToListAsync(),
                 StatusMessage = StatusMessge
             };
+
+            /*modelVM.SubCategory.Id=id*/;
             return View(modelVM);
 
+        }
+
+
+        public async Task<IActionResult> Detials(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var category = await _db.SubCategroy.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
         }
 
 
