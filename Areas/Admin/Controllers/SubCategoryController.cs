@@ -183,7 +183,7 @@ namespace Spice_tedliu.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            var category = await _db.Categroy.FindAsync(id);
+            var category = await _db.SubCategroy.FindAsync(id);
             if (category == null)
             {
                 return NotFound();
@@ -196,12 +196,12 @@ namespace Spice_tedliu.Areas.Admin.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            var category = await _db.Categroy.FindAsync(id);
+            var category = await _db.SubCategroy.FindAsync(id);
             if (category == null)
             {
                 return NotFound();
             }
-            _db.Categroy.Remove(category);
+             _db.SubCategroy.Remove(category);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
