@@ -18,5 +18,6 @@ namespace Spice_tedliu.Data
         public DbSet<Category> Categroy { get; set; }
 
         public DbSet<SubCategory> SubCategroy { get; set; }
+        public DbSet<MenuItem> MenuItem { get;set;}
     }
 }
