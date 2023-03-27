@@ -188,20 +188,25 @@ namespace Spice_tedliu.Areas.Admin.Controllers
 
 
 
-        public async Task<IActionResult> Detials(int? id)
+        // GET - Details
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var category = await _db.MenuItem.FindAsync(id);
-            if (category == null)
+
+            MenuItemVM.MenuItem = await _db.MenuItem.Include(m => m.Category).Include(m => m.SubCategory).SingleOrDefaultAsync(m => m.Id == id);
+            MenuItemVM.SubCategory = await _db.SubCategroy.Where(s => s.CategoryId == MenuItemVM.MenuItem.CategoryId).ToListAsync();
+
+            if (MenuItemVM.MenuItem == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(MenuItemVM);
         }
+
 
 
     }
