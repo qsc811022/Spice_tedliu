@@ -19,5 +19,7 @@ namespace Spice_tedliu.Data
 
         public DbSet<SubCategory> SubCategroy { get; set; }
         public DbSet<MenuItem> MenuItem { get;set;}
+
+        public DbSet<Coupon> Coupon { get;set;}
     }
 }
