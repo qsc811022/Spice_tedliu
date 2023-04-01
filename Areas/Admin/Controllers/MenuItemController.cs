@@ -189,7 +189,7 @@ namespace Spice_tedliu.Areas.Admin.Controllers
 
 
         //GET : Details MenuItem
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Detials(int? id)
         {
             if (id == null)
             {
