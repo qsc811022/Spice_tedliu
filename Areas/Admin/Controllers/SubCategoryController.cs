@@ -158,24 +158,23 @@ namespace Spice_tedliu.Areas.Admin.Controllers
         }
 
 
+        //GET Details
         public async Task<IActionResult> Detials(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var category = await _db.SubCategroy.FindAsync(id);
-            if (category == null)
+            var subCategory = await _db.SubCategroy.Include(s => s.Category).SingleOrDefaultAsync(m => m.Id == id);
+            if (subCategory == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(subCategory);
         }
 
 
-
-        //GET -Delete
 
         public async Task<IActionResult> Delete(int? id)
         {
@@ -183,29 +182,29 @@ namespace Spice_tedliu.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            var category = await _db.SubCategroy.FindAsync(id);
-            if (category == null)
+            var subCategory = await _db.SubCategroy.Include(s => s.Category).SingleOrDefaultAsync(m => m.Id == id);
+            if (subCategory == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(subCategory);
         }
 
+        //POST Delete
         [HttpPost, ActionName("Delete")]
-        [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _db.SubCategroy.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-             _db.SubCategroy.Remove(category);
+            var subCategory = await _db.SubCategroy.SingleOrDefaultAsync(m => m.Id == id);
+            _db.SubCategroy.Remove(subCategory);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+
         }
 
-
     }
+
+
 }
+
