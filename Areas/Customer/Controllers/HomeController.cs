@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 
 using Spice_tedliu.Models;
+using Spice_tedliu.Models.ViewModels;
 
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace Spice_tedliu.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
+
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -23,6 +25,7 @@ namespace Spice_tedliu.Controllers
 
         public IActionResult Index()
         {
+            IndexViewModel IndexVM =new IndexViewModel();
             return View();
         }
 
