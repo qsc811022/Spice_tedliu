@@ -36,9 +36,10 @@ namespace Spice_tedliu.Controllers
             IndexViewModel IndexVM =new IndexViewModel()
             {
                 MenuItem = await _db.MenuItem.Include(m=>m.Category).Include(m=>m.SubCategory).ToListAsync(),
-
+                Category = await _db.Categroy.ToListAsync(),
+                Coupon = await _db.Coupon.Where(c=>c.IsActive==true).ToListAsync()
             };
-            return View();
+            return View(IndexVM);
         }
 
         public IActionResult Privacy()
