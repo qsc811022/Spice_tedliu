@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
+using Spice_tedliu.Data;
 using Spice_tedliu.Models;
 using Spice_tedliu.Models.ViewModels;
 
@@ -16,6 +18,12 @@ namespace Spice_tedliu.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _db;
+
+        public HomeController(ApplicationDbContext db)
+        {
+            db=_db;
+        }
 
 
         public HomeController(ILogger<HomeController> logger)
@@ -23,9 +31,13 @@ namespace Spice_tedliu.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            IndexViewModel IndexVM =new IndexViewModel();
+            IndexViewModel IndexVM =new IndexViewModel()
+            {
+                MenuItem = await _db.MenuItem.Include(m=>m.Category).Include(m=>m.SubCategory).ToListAsync(),
+
+            };
             return View();
         }
 
