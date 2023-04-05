@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 namespace Spice_tedliu.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
+
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
