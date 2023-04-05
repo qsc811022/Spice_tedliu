@@ -17,19 +17,19 @@ namespace Spice_tedliu.Controllers
     [Area("Customer")]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        //private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _db;
 
         public HomeController(ApplicationDbContext db)
         {
-            db=_db;
+            _db=db;
         }
 
 
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+        //public HomeController(ILogger<HomeController> logger)
+        //{
+        //    _logger = logger;
+        //}
 
         public async Task<IActionResult> Index()
         {
