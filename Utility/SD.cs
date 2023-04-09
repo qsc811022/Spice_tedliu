@@ -81,12 +81,12 @@ namespace Spice_tedliu.Utility
                 else
                 {
                     //everything is valid
-                    if (Convert.ToInt32(couponFromDb.CouponType) == (int)Coupon.ECouponType.Dollar)
+                    if (Convert.ToInt32(couponFromDb.CoupType) == (int)Coupon.ECouponType.Dollar)
                     {
                         //$10 off $100
                         return Math.Round(OriginalOrderTotal - couponFromDb.Discount, 2);
                     }
-                    if (Convert.ToInt32(couponFromDb.CouponType) == (int)Coupon.ECouponType.Percent)
+                    if (Convert.ToInt32(couponFromDb.CoupType) == (int)Coupon.ECouponType.Percent)
                     {
                         //10% off $100
                         return Math.Round(OriginalOrderTotal - (OriginalOrderTotal * couponFromDb.Discount / 100), 2);
