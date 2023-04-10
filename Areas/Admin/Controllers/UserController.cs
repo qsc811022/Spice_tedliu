@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using Spice_tedliu.Data;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Spice_tedliu.Areas.Admin.Controllers
@@ -18,9 +20,13 @@ namespace Spice_tedliu.Areas.Admin.Controllers
         {
             _db=db;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var claimsIdentity=(ClaimsIdentity)this.User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+
+            return View(await _db.ApplicationUser.Where(u=>u.Id !=claim.Value).ToListAsync());
         }
     }
 }
