@@ -84,73 +84,70 @@ namespace Spice_tedliu.Areas.Identity.Pages.Account
 
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
-        {
-            ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-        }
-
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            string role = Request.Form["rdUserRole"].ToString();
+
+
             returnUrl = returnUrl ?? Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser 
-                { 
-                    UserName = Input.Email, 
+                var user = new ApplicationUser
+                {
+                    UserName = Input.Email,
                     Email = Input.Email,
-                    Name=Input.Name,
-                    City=Input.City,
-                    StreetAddress=Input.StreetAddress,
-                    PostalCode=Input.PostalCode,
-                    PhoneNumber=Input.PhoneNumber
-
+                    Name = Input.Name,
+                    City = Input.City,
+                    StreetAddress = Input.StreetAddress,
+                    Stats = Input.Stats,
+                    PostalCode = Input.PostalCode,
+                    PhoneNumber = Input.PhoneNumber
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    if (!await _roleManager.RoleExistsAsync(SD.CustomerEndUser))
+
+                    if (role == SD.KitchenUser)
                     {
-                        await _roleManager.CreateAsync(new IdentityRole(SD.CustomerEndUser));
+                        await _userManager.AddToRoleAsync(user, SD.KitchenUser);
                     }
-                    if (!await _roleManager.RoleExistsAsync(SD.ManagerUser))
+                    else
                     {
-                        await _roleManager.CreateAsync(new IdentityRole(SD.ManagerUser));
-                    }
-                    if (!await _roleManager.RoleExistsAsync(SD.FrontDeskUser))
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole(SD.FrontDeskUser));
-                    }
-                    if (!await _roleManager.RoleExistsAsync(SD.KitchenUser))
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole(SD.KitchenUser));
+                        if (role == SD.FrontDeskUser)
+                        {
+                            await _userManager.AddToRoleAsync(user, SD.FrontDeskUser);
+                        }
+                        else
+                        {
+                            if (role == SD.ManagerUser)
+                            {
+                                await _userManager.AddToRoleAsync(user, SD.ManagerUser);
+                            }
+                            else
+                            {
+                                await _userManager.AddToRoleAsync(user, SD.CustomerEndUser);
+                                await _signInManager.SignInAsync(user, isPersistent: false);
+                                return LocalRedirect(returnUrl);
+                            }
+                        }
                     }
 
-                    await _userManager.AddToRoleAsync(user,SD.ManagerUser);
+                    return RedirectToAction("Index", "User", new { area = "Admin" });
 
-                    //_logger.LogInformation("User created a new account with password.");
+                    _logger.LogInformation("User created a new account with password.");
 
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     //var callbackUrl = Url.Page(
                     //    "/Account/ConfirmEmail",
                     //    pageHandler: null,
-                    //    values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                    //    values: new { userId = user.Id, code = code },
                     //    protocol: Request.Scheme);
 
                     //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                     //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    //if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    //{
-                    //    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    //}
-                    //else
-                    //{
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    //}
+
+
                 }
                 foreach (var error in result.Errors)
                 {

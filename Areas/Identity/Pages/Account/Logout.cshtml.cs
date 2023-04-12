@@ -36,7 +36,7 @@ namespace Spice_tedliu.Areas.Identity.Pages.Account
             }
             else
             {
-                return RedirectToPage();
+                return RedirectToPage("Logout");
             }
         }
     }
