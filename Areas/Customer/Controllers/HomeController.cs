@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -69,7 +70,7 @@ namespace Spice_tedliu.Controllers
             {
                 var claimsIdentity=(ClaimsIdentity)this.User.Identity;
                 var claim= claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                CartObject.ApplicationUser=claim.Value;
+                CartObject.ApplicationUserId=claim.Value;
 
                 ShoppingCart cartFromDb = await _db.ShoppingCart.Where(c=>c.ApplicationUserId==CartObject.ApplicationUserId && c.MenuItemId==CartObject.MenuItemId)
                     .FirstOrDefaultAsync();
@@ -84,10 +85,20 @@ namespace Spice_tedliu.Controllers
                 }
                 await _db.SaveChangesAsync();
                 var count = _db.ShoppingCart.Where(c=>c.ApplicationUserId==cartFromDb.ApplicationUserId).ToList().Count();
-
-
+                HttpContext.Session.SetInt32("ssCartCount",count);
+                return RedirectToAction("Index");
             }
+            else
+            {
+                var menuItemFromDb = await _db.MenuItem.Include(m => m.Category).Include(m => m.SubCategory).Where(m => m.Id == CartObject.MenuItemId).FirstOrDefaultAsync();
 
+                ShoppingCart cartObj = new ShoppingCart()
+                {
+                    MenuItem = menuItemFromDb,
+                    MenuItemId = menuItemFromDb.Id
+                };
+            }
+            return View(CartObject);
         }
 
 
