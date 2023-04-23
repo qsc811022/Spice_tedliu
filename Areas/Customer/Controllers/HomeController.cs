@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Spice_tedliu.Controllers
@@ -55,6 +56,38 @@ namespace Spice_tedliu.Controllers
             };
 
             return View(cartObj);
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Details(ShoppingCart CartObject)
+        {
+            CartObject.Id=0;
+            if (ModelState.IsValid)
+            {
+                var claimsIdentity=(ClaimsIdentity)this.User.Identity;
+                var claim= claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                CartObject.ApplicationUser=claim.Value;
+
+                ShoppingCart cartFromDb = await _db.ShoppingCart.Where(c=>c.ApplicationUserId==CartObject.ApplicationUserId && c.MenuItemId==CartObject.MenuItemId)
+                    .FirstOrDefaultAsync();
+
+                if (cartFromDb==null)
+                {
+                    await _db.ShoppingCart.AddAsync(CartObject);
+                }
+                else
+                {
+                    cartFromDb.Count=cartFromDb.Count+CartObject.Count;
+                }
+                await _db.SaveChangesAsync();
+                var count = _db.ShoppingCart.Where(c=>c.ApplicationUserId==cartFromDb.ApplicationUserId).ToList().Count();
+
+
+            }
+
         }
 
 
