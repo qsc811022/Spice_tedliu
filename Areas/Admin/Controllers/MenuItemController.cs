@@ -128,7 +128,7 @@ namespace Spice_tedliu.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPOST(int? id)
         {
-            if (id==null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -136,16 +136,12 @@ namespace Spice_tedliu.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                MenuItemVM.SubCategory=await _db.SubCategroy.Where(s=>s.CategoryId==MenuItemVM.MenuItem.CategoryId).ToArrayAsync();
+                MenuItemVM.SubCategory = await _db.SubCategroy.Where(s => s.CategoryId == MenuItemVM.MenuItem.CategoryId).ToListAsync();
                 return View(MenuItemVM);
             }
 
-
-
-            //_db.MenuItem.Add(MenuItemVM.MenuItem);
-            //await _db.SaveChangesAsync();
-
             //Work on the image saving section
+
             string webRootPath = _hostingEnviroment.WebRootPath;
             var files = HttpContext.Request.Form.Files;
 
@@ -157,36 +153,32 @@ namespace Spice_tedliu.Areas.Admin.Controllers
                 var uploads = Path.Combine(webRootPath, "images");
                 var extension_new = Path.GetExtension(files[0].FileName);
 
-
                 //Delete the original file
-                var imagePath=Path.Combine(webRootPath, menuItemFromDb.Image.TrimStart('\\'));
+                var imagePath = Path.Combine(webRootPath, menuItemFromDb.Image.TrimStart('\\'));
 
                 if (System.IO.File.Exists(imagePath))
                 {
                     System.IO.File.Delete(imagePath);
                 }
 
-
                 //we will upload the new file
                 using (var filesStream = new FileStream(Path.Combine(uploads, MenuItemVM.MenuItem.Id + extension_new), FileMode.Create))
                 {
                     files[0].CopyTo(filesStream);
-
                 }
                 menuItemFromDb.Image = @"\images\" + MenuItemVM.MenuItem.Id + extension_new;
-
-
             }
-            menuItemFromDb.Name=MenuItemVM.MenuItem.Name;
+
+            menuItemFromDb.Name = MenuItemVM.MenuItem.Name;
             menuItemFromDb.Description = MenuItemVM.MenuItem.Description;
             menuItemFromDb.Price = MenuItemVM.MenuItem.Price;
             menuItemFromDb.Spicyness = MenuItemVM.MenuItem.Spicyness;
             menuItemFromDb.CategoryId = MenuItemVM.MenuItem.CategoryId;
             menuItemFromDb.SubCategoryId = MenuItemVM.MenuItem.SubCategoryId;
+
             await _db.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
-
-
         }
 
 
