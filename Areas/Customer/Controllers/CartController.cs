@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace Spice_tedliu.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class CartController : Controller
     {
         private readonly ApplicationDbContext _db;
